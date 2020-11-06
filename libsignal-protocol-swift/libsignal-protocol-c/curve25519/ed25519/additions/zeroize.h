@@ -7,6 +7,6 @@
 
 void zeroize(unsigned char* b, size_t len);
 
-void zeroize_stack(void);
+void zeroize_stack();
 
 #endif

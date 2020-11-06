@@ -334,7 +334,7 @@ int session_builder_process_pre_key_bundle(session_builder *builder, session_pre
     if(result < 0) {
         goto complete;
     }
-    
+
 complete:
     SIGNAL_UNREF(record);
     SIGNAL_UNREF(our_base_key);

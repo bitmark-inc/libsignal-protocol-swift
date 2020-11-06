@@ -430,7 +430,7 @@ typedef struct signal_protocol_session_store {
     /**
      * Returns all known devices with active sessions for a recipient
      *
-     * @param sessions pointer to an array that will be allocated and populated with the result
+     * @param pointer to an array that will be allocated and populated with the result
      * @param name the name of the remote client
      * @param name_len the length of the name
      * @return size of the sessions array, or negative on failure
@@ -599,7 +599,6 @@ typedef struct signal_protocol_identity_key_store {
      * @param private_data pointer to a newly allocated buffer containing the
      *     private key, if found. Unset if no record was found.
      *     The Signal Protocol library is responsible for freeing this buffer.
-     * @param user_data Pointer to the user data.
      * @return 0 on success, negative on failure
      */
     int (*get_identity_key_pair)(signal_buffer **public_data, signal_buffer **private_data, void *user_data);
@@ -610,7 +609,6 @@ typedef struct signal_protocol_identity_key_store {
      * Clients should maintain a registration ID, a random number
      * between 1 and 16380 that's generated once at install time.
      *
-     * @param user_data Pointer to the user data.
      * @param registration_id pointer to be set to the local client's
      *     registration ID, if it was successfully retrieved.
      * @return 0 on success, negative on failure
@@ -628,7 +626,6 @@ typedef struct signal_protocol_identity_key_store {
      * @param address the address of the remote client
      * @param key_data Pointer to the remote client's identity key, may be null
      * @param key_len Length of the remote client's identity key
-     * @param user_data Pointer to the user data.
      * @return 0 on success, negative on failure
      */
     int (*save_identity)(const signal_protocol_address *address, uint8_t *key_data, size_t key_len, void *user_data);
@@ -644,9 +641,9 @@ typedef struct signal_protocol_identity_key_store {
      * 'untrusted.'
      *
      * @param address the address of the remote client
+     * @param identityKey The identity key to verify.
      * @param key_data Pointer to the identity key to verify
      * @param key_len Length of the identity key to verify
-     * @param user_data Pointer to the user data.
      * @return 1 if trusted, 0 if untrusted, negative on failure
      */
     int (*is_trusted_identity)(const signal_protocol_address *address, uint8_t *key_data, size_t key_len, void *user_data);
@@ -654,7 +651,6 @@ typedef struct signal_protocol_identity_key_store {
     /**
      * Function called to perform cleanup when the data store context is being
      * destroyed.
-     * @param user_data Pointer to the user data.
      */
     void (*destroy_func)(void *user_data);
 
