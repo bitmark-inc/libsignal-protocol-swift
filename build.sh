@@ -58,14 +58,20 @@ build_signal_module()
 build_swift_framework()
 (
     PLATFORM=$1
+    BITCODE=$2
     
-    xcodebuild -target "${PROJECT_NAME}" ONLY_ACTIVE_ARCH=NO -configuration ${CONFIGURATION} CONFIGURATION_BUILD_DIR="${OUTPUT_DIR}/${PLATFORM}" build -sdk ${PLATFORM}
+    xcodebuild -target "${PROJECT_NAME}" \
+    ONLY_ACTIVE_ARCH=NO \
+    -configuration ${CONFIGURATION} \
+    CONFIGURATION_BUILD_DIR="${OUTPUT_DIR}/${PLATFORM}" \
+    build -sdk ${PLATFORM} \
+    BITCODE_GENERATION_MODE=${BITCODE}
 )
 
 build_swift_frameworks()
 (
-    build_swift_framework "iphoneos"
-    build_swift_framework "iphonesimulator"
+    build_swift_framework "iphoneos" "bitcode"
+    build_swift_framework "iphonesimulator" "marker"
 )
 
 build_swift_xcframework()
