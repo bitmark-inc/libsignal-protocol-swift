@@ -38,11 +38,12 @@ public final class Signal {
 public extension Signal {
     
     static func publicKey(for privateKey: Data) throws -> Data {
-        
+        let privateBuffer = privateKey.signalBuffer
         var pubKey: OpaquePointer? = nil
         let result = withUnsafeMutablePointer(to: &pubKey) {
             curve_generate_public_key($0, privateKey.signalBuffer)
         }
+        defer { signal_buffer_free(privateBuffer) }
 
         guard result == 0 else { throw SignalError(value: result) }
         
@@ -53,7 +54,9 @@ public extension Signal {
         
         guard result2 == 0 else { throw SignalError(value: result) }
         
-        return Data(signalBuffer: pubBuffer!)
+        let pubkey = Data(signalBuffer: pubBuffer!)
+        signal_buffer_free(pubBuffer)
+        return pubkey
     }
 
     /**
