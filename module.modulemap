@@ -1,0 +1,11 @@
+module SignalModule {
+    header "signal_protocol.h"
+    header "key_helper.h"
+    header "session_builder.h"
+    header "session_cipher.h"
+    header "protocol.h"
+    header "group_session_builder.h"
+    header "group_cipher.h"
+    header "fingerprint.h"
+    export *
+}

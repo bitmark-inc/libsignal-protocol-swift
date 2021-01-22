@@ -10,6 +10,16 @@ So far, integration of the framework into other projects is not working through 
 
 It should be possible to download the framework and add it to an existing Xcode workspace.
 
+## Building Library
+
+```sh
+$ git clone https://github.com/bitmark-inc/libsignal-protocol-swift.git
+$ cd libsignal-protocol-swift
+$ ./build.sh
+```
+
+The resulting frameworks are build/SignalModule.xcframework and build/SignalProtocol.xcframework. Add both to your project.
+
 ## Library initialization
 
 In contrast to `libsignal-protocol-c` there is no need to initialize a global
