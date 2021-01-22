@@ -8,6 +8,12 @@ SIGNAL_PROTOCOL_OUTPUT_DIR=${OUTPUT_DIR}/SignalModuleMap
 UNIVERSAL_OUTPUT_DIR=${OUTPUT_DIR}/${CONFIGURATION}-universal
 RELEASE_DIR=${PROJECT_DIR}/build
 
+clean_up()
+(
+    rm -rf "${RELEASE_DIR}/${PRODUCT_NAME}.xcframework"
+    rm -rf "${RELEASE_DIR}/SignalModule.xcframework"
+)
+
 get_dependencies()
 (
     git submodule update --init --recursive
@@ -37,9 +43,13 @@ build_c_libraries()
 
 build_signal_module()
 (
+    mkdir -p "${OUTPUT_DIR}/Headers/libsignal-protocol-c"
+    cp -R "/usr/local/include/signal/" "${OUTPUT_DIR}/Headers/libsignal-protocol-c"
+    cp -R $PROJECT_DIR/module.modulemap ${OUTPUT_DIR}/Headers/libsignal-protocol-c
+    
     xcodebuild -create-xcframework \
-        -library "${SIGNAL_PROTOCOL_OUTPUT_DIR}/OS64/libsignal-protocol-c.a" -headers "/usr/local/include/signal/" \
-        -library "${SIGNAL_PROTOCOL_OUTPUT_DIR}/SIMULATOR64/libsignal-protocol-c.a" -headers "/usr/local/include/signal/" \
+        -library "${SIGNAL_PROTOCOL_OUTPUT_DIR}/OS64/libsignal-protocol-c.a" -headers "${OUTPUT_DIR}/Headers/" \
+        -library "${SIGNAL_PROTOCOL_OUTPUT_DIR}/SIMULATOR64/libsignal-protocol-c.a" -headers "${OUTPUT_DIR}/Headers/" \
         -output "${SIGNAL_PROTOCOL_OUTPUT_DIR}/SignalModule.xcframework"
     
     cp -R "${SIGNAL_PROTOCOL_OUTPUT_DIR}/SignalModule.xcframework" "${RELEASE_DIR}"
@@ -76,6 +86,7 @@ build_swift_xcframework()
 
 (
     get_dependencies
+    clean_up
     mkdir -p "${UNIVERSAL_OUTPUT_DIR}"
     build_c_libraries
     build_signal_module
