@@ -37,26 +37,27 @@ public final class Signal {
 
 public extension Signal {
     
-    static func publicKey(for privateKey: Data) throws -> Data {
+    static func keypair(for privateKey: Data) throws -> KeyPair {
         let privateBuffer = privateKey.signalBuffer
         var pubKey: OpaquePointer? = nil
         let result = withUnsafeMutablePointer(to: &pubKey) {
-            curve_generate_public_key($0, privateKey.signalBuffer)
+            curve_generate_public_key($0, privateBuffer)
         }
         defer { signal_buffer_free(privateBuffer) }
 
         guard result == 0 else { throw SignalError(value: result) }
         
-        var pubBuffer: OpaquePointer? = nil
-        let result2 = withUnsafeMutablePointer(to: &pubBuffer) {
-            ec_public_key_serialize($0, pubKey)
+        var keypairPointer: OpaquePointer? = nil
+        let result2 = withUnsafeMutablePointer(to: &keypairPointer) {
+            ec_key_pair_create($0, pubKey, privateBuffer)
         }
         
-        guard result2 == 0 else { throw SignalError(value: result) }
+        guard result2 == 0,
+              let k = keypairPointer else { throw SignalError(value: result) }
         
-        let pubkey = Data(signalBuffer: pubBuffer!)
-        signal_buffer_free(pubBuffer)
-        return pubkey
+        let keypair = try KeyPair(pointer: k)
+        signal_buffer_free(keypairPointer)
+        return keypair
     }
 
     /**
